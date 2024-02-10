@@ -6,12 +6,22 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AppResolver } from './app.resolver';
 
+import { TaskModule } from './task/task.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot(),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      formatError: (error) => {
+        return {
+          message:
+            error.message != 'Bad Request Exception' ||
+            error.extensions.originalError.message[0],
+          code: error.extensions?.code || 'SERVER_ERROR',
+        };
+      },
     }),
     TypeOrmModule.forRoot({
       host: process.env.DATABASE_HOST,
@@ -25,6 +35,7 @@ import { AppResolver } from './app.resolver';
       port: 5432,
     }),
     AppResolver,
+    TaskModule,
   ],
 })
 export class AppModule {}
