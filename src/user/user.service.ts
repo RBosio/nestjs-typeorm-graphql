@@ -44,6 +44,27 @@ export class UserService {
     return userFound;
   }
 
+  async findOneByEmail(email: string): Promise<User> {
+    const userFound = await this.userRepository.findOne({
+      where: {
+        email,
+        status: true,
+      },
+      relations: {
+        tasks: true,
+      },
+    });
+
+    if (!userFound)
+      throw new GraphQLError('Email or password incorrect!', {
+        extensions: {
+          code: HttpStatus.UNAUTHORIZED,
+        },
+      });
+
+    return userFound;
+  }
+
   async create(createUserInput: CreateUserInput): Promise<User> {
     const userCreated = this.userRepository.create(createUserInput);
     return this.userRepository.save(userCreated);

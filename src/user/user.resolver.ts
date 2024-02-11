@@ -4,7 +4,7 @@ import { User } from 'src/entities/user.entity';
 import { CreateUserInput } from './dto/create-user-input';
 import { UpdateUserInput } from './dto/update-user-input';
 
-@Resolver()
+@Resolver(() => User)
 export class UserResolver {
   constructor(private userService: UserService) {}
 

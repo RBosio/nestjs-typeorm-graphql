@@ -4,7 +4,7 @@ import { Task } from 'src/entities/task.entity';
 import { CreateTaskInput } from './dto/create-task-input';
 import { UpdateTaskInput } from './dto/update-task-input';
 
-@Resolver()
+@Resolver(() => Task)
 export class TaskResolver {
   constructor(private taskService: TaskService) {}
 
