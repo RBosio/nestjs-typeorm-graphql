@@ -1,11 +1,12 @@
-import { Field, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from './user.entity';
 
-@ObjectType()
 @Entity()
+@ObjectType()
 export class Task {
   @PrimaryGeneratedColumn()
-  @Field(() => Number)
+  @Field(() => ID)
   id: number;
 
   @Column()
@@ -18,4 +19,8 @@ export class Task {
 
   @Column({ default: true })
   status: boolean;
+
+  @ManyToOne(() => User, (user) => user.tasks)
+  @Field(() => User, { nullable: true })
+  user: User;
 }

@@ -5,17 +5,22 @@ import { Repository } from 'typeorm';
 import { CreateTaskInput } from './dto/create-task-input';
 import { GraphQLError } from 'graphql';
 import { UpdateTaskInput } from './dto/update-task-input';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class TaskService {
   constructor(
     @InjectRepository(Task) private taskRepository: Repository<Task>,
+    private userService: UserService,
   ) {}
 
   findAll(): Promise<Task[]> {
     return this.taskRepository.find({
       where: {
         status: true,
+      },
+      relations: {
+        user: true,
       },
     });
   }
@@ -25,6 +30,9 @@ export class TaskService {
       where: {
         id,
         status: true,
+      },
+      relations: {
+        user: true,
       },
     });
 
@@ -39,8 +47,12 @@ export class TaskService {
   }
 
   async create(createTaskInput: CreateTaskInput): Promise<Task> {
-    const task = this.taskRepository.create(createTaskInput);
-    return this.taskRepository.save(task);
+    const taskCreated = this.taskRepository.create(createTaskInput);
+
+    const userFound = await this.userService.findOne(createTaskInput.userId);
+    taskCreated.user = userFound;
+
+    return this.taskRepository.save(taskCreated);
   }
 
   async update(id: number, task: UpdateTaskInput): Promise<Task> {
@@ -57,9 +69,9 @@ export class TaskService {
         },
       });
 
-    const updateTask = Object.assign(taskFound, task);
+    const taskUpdated = Object.assign(taskFound, task);
 
-    return this.taskRepository.save(updateTask);
+    return this.taskRepository.save(taskUpdated);
   }
 
   async delete(id: number): Promise<Task> {

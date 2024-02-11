@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AppResolver } from './app.resolver';
 
 import { TaskModule } from './task/task.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -16,9 +17,7 @@ import { TaskModule } from './task/task.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       formatError: (error) => {
         return {
-          message:
-            error.message != 'Bad Request Exception' ||
-            error.extensions.originalError.message[0],
+          message: error.message,
           code: error.extensions?.code || 'SERVER_ERROR',
         };
       },
@@ -28,7 +27,7 @@ import { TaskModule } from './task/task.module';
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       type: 'postgres',
-      database: process.env.DATABASE_USER,
+      database: process.env.DATABASE_NAME,
       entities: [__dirname + '/entities/*.entity{.tx,.js}'],
       synchronize: Boolean(process.env.DATABASE_SYNC),
       dropSchema: true,
@@ -36,6 +35,7 @@ import { TaskModule } from './task/task.module';
     }),
     AppResolver,
     TaskModule,
+    UserModule,
   ],
 })
 export class AppModule {}
