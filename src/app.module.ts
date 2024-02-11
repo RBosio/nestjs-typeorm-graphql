@@ -22,6 +22,7 @@ import { AuthModule } from './auth/auth.module';
           code: error.extensions?.code || 'SERVER_ERROR',
         };
       },
+      context: ({ req }) => ({ headers: req.headers }),
     }),
     TypeOrmModule.forRoot({
       host: process.env.DATABASE_HOST,

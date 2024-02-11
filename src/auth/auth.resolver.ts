@@ -1,12 +1,9 @@
-import {
-  Args,
-  Field,
-  ObjectType,
-  Query,
-  Resolver,
-} from '@nestjs/graphql';
+import { Args, Context, Field, ObjectType, Query, Resolver } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
 import { LoginInput } from './dto/login-input';
+import { Req, UseGuards } from '@nestjs/common';
+import { User } from 'src/entities/user.entity';
+import { AuthGuard } from './auth.guard';
 
 @ObjectType()
 export class LoginResponse {
@@ -21,5 +18,11 @@ export class AuthResolver {
   @Query(() => LoginResponse)
   login(@Args('loginInput') loginInput: LoginInput): Promise<LoginResponse> {
     return this.authService.login(loginInput);
+  }
+
+  @Query(() => User)
+  @UseGuards(AuthGuard)
+  session(@Context('user') user: User): User {
+    return user;
   }
 }

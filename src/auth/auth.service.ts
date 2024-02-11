@@ -27,13 +27,10 @@ export class AuthService {
       token: await this.jwtService.signAsync(
         {
           sub: userFound.id,
-          name: userFound.name,
-          lastname: userFound.lastname,
-          email: userFound.email,
         },
         {
           secret: process.env.JWT_SECRET,
-          expiresIn: '24h'
+          expiresIn: '24h',
         },
       ),
     };
