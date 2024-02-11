@@ -24,15 +24,9 @@ export class AuthService {
     }
 
     return {
-      token: await this.jwtService.signAsync(
-        {
-          sub: userFound.id,
-        },
-        {
-          secret: process.env.JWT_SECRET,
-          expiresIn: '24h',
-        },
-      ),
+      token: await this.jwtService.signAsync({
+        sub: userFound.id,
+      }),
     };
   }
 }

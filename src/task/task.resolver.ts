@@ -3,8 +3,11 @@ import { TaskService } from './task.service';
 import { Task } from 'src/entities/task.entity';
 import { CreateTaskInput } from './dto/create-task-input';
 import { UpdateTaskInput } from './dto/update-task-input';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Resolver(() => Task)
+@UseGuards(AuthGuard)
 export class TaskResolver {
   constructor(private taskService: TaskService) {}
 
